@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlmodel import select
 from app.database import SessionDep
 from app.models import *
+from app.models.user import *
 from app.auth import *
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
@@ -32,10 +33,13 @@ async def users(
     user: AuthDep,
     db:SessionDep
 ):
+    users = db.exec(select(User)).all()
+
     return templates.TemplateResponse(
         request=request, 
         name="users.html",
         context={
-            "user": user
+            "user": user,
+            "all_users": users
         }
     )
